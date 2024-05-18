@@ -3,17 +3,32 @@ import { useState } from "react";
 import Header from "./components/Header";
 import Product from "./components/Product";
 
-import {db} from './data/db.js'
+import { db } from "./data/db.js";
 
 function App() {
+  const [dataProducto, setDataProducto] = useState(db);
+  const [cart, setCart] = useState([]);
 
-  const [dataProducto, setDataProducto] = useState(db)
-  const [cart, setCart] = useState([])
 
+  // Una recomendacion la agregar productso al arreglo es crear una funcion
   function addToCart(item) {
-    console.log('Agreando al carrito');
 
-    setCart( prevCart => ([...prevCart, item]))}
+    const itemExist = cart.findIndex((guitar) => guitar.id === item.id )
+    //console.log(itemExist);
+    if (itemExist >= 0) {
+      console.log("ya existe");
+      // crear una variable
+      const updateCart = [...cart]
+      updateCart[itemExist].quantity++
+      setCart(updateCart)
+    }else{
+      console.log("Noo existe, agregando");
+      item.quantity = 1
+      //setCart( prevCart => ([...prevCart, item]))
+      setCart(([...cart, item]))
+    }
+  }
+
   
 
   return (
@@ -25,15 +40,15 @@ function App() {
 
         <div className="row mt-5">
           {/* dentro del parentesis de map, agrago un valor para acceder al objeto */}
-       { dataProducto.map( (detailGuit) => (
-       <Product
-          key={detailGuit.id}
-          detailGuit={detailGuit}
-          setCart ={setCart}
-
-          addToCart={addToCart}
-
-         />))}
+          {dataProducto.map((detailGuit) => (
+            <Product
+              key={detailGuit.id}
+              detailGuit={detailGuit}
+              // cart={cart}
+              setCart={setCart}
+              addToCart={addToCart}
+            />
+          ))}
         </div>
       </main>
 
